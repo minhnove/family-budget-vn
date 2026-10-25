@@ -6,8 +6,11 @@ import { extname, join, normalize } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { DB_MODE } from '../lib/db.js';
 import { APP_NAME } from '../public/js/shared.js';
+import { readFileSync } from 'node:fs';
 
 const root = fileURLToPath(new URL('..', import.meta.url));
+// Áp đúng header bảo mật trong vercel.json (CSP...) để lỗi hiện ra ngay khi chạy thử
+const VERCEL_HEADERS = JSON.parse(readFileSync(new URL('../vercel.json', import.meta.url), 'utf8')).headers[0].headers;
 const PORT = Number(process.env.PORT) || Number(process.argv[2]) || 3000;   // npm run dev -- 3001
 const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; charset=utf-8', '.css': 'text/css; charset=utf-8',
   '.svg': 'image/svg+xml', '.png': 'image/png', '.webmanifest': 'application/manifest+json', '.json': 'application/json' };
@@ -15,6 +18,7 @@ const TYPES = { '.html': 'text/html; charset=utf-8', '.js': 'text/javascript; ch
 
 http.createServer(async (req, res) => {
   const url = new URL(req.url, 'http://localhost');
+  VERCEL_HEADERS.forEach(h => res.setHeader(h.key, h.value));
   try {
     if (url.pathname.startsWith('/api/')) {
       const name = url.pathname.slice(5).replace(/[^a-z]/g, '');

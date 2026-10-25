@@ -66,10 +66,10 @@ create table if not exists transactions (
   date       date not null,
   type       text not null check (type in ('Chi', 'Thu', 'Trả nợ', 'Vay', 'Cho vay', 'Thu hồi nợ')),
   category   text not null,
-  amount     bigint not null check (amount > 0),
+  amount     bigint not null check (amount > 0) constraint transactions_amount_max check (amount <= 1000000000000),
   person     text,
   debt       text references debts(code) on update cascade on delete set null,
-  note       text not null default '',
+  note       text not null default '' constraint transactions_note_len check (char_length(note) <= 500),
   source     text,                     -- Web / Telegram
   created_at timestamptz not null default now(),
   created_by text                      -- tg:<id> hoặc web
@@ -96,3 +96,45 @@ alter table assets           enable row level security;
 alter table transactions     enable row level security;
 alter table app_state        enable row level security;
 alter table tg_updates       enable row level security;
+
+-- ===== Bảo mật (từ v1.1.0) =====
+-- 1) Giới hạn đăng nhập theo IP, đếm nguyên tử trong Postgres (chống bắn request song song)
+create table if not exists login_attempts (
+  key          text primary key,                 -- 'ip:<sha256>' hoặc 'global'
+  count        int not null default 0,
+  window_start timestamptz not null default now()
+);
+alter table login_attempts enable row level security;
+
+-- Tăng bộ đếm và trả về số lần trong cửa sổ hiện tại (hết cửa sổ thì đếm lại từ 1). Một lệnh, không đọc-rồi-ghi.
+create or replace function login_attempt(p_key text, p_window_seconds int)
+returns int language sql security definer set search_path = public as $$
+  insert into login_attempts as la (key, count, window_start) values (p_key, 1, now())
+  on conflict (key) do update set
+    count = case when la.window_start < now() - make_interval(secs => p_window_seconds) then 1 else la.count + 1 end,
+    window_start = case when la.window_start < now() - make_interval(secs => p_window_seconds) then now() else la.window_start end
+  returning count;
+$$;
+
+create or replace function login_reset(p_key text)
+returns void language sql security definer set search_path = public as $$
+  delete from login_attempts where key = p_key;
+$$;
+
+-- 2) Phiên bản phiên đăng nhập: tăng lên là mọi cookie cũ hết hiệu lực ("Đăng xuất mọi thiết bị")
+create or replace function bump_session_version()
+returns int language sql security definer set search_path = public as $$
+  insert into app_state (key, value, updated_at) values ('session_version', '2'::jsonb, now())
+  on conflict (key) do update set
+    value = to_jsonb(coalesce((app_state.value #>> '{}')::int, 1) + 1),
+    updated_at = now()
+  returning (value #>> '{}')::int;
+$$;
+
+-- Chỉ máy chủ (service_role) được gọi các hàm trên
+revoke all on function login_attempt(text, int) from public, anon, authenticated;
+revoke all on function login_reset(text) from public, anon, authenticated;
+revoke all on function bump_session_version() from public, anon, authenticated;
+grant execute on function login_attempt(text, int) to service_role;
+grant execute on function login_reset(text) to service_role;
+grant execute on function bump_session_version() to service_role;

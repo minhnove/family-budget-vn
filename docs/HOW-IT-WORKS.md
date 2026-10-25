@@ -125,7 +125,7 @@ flowchart TB
 
 - **Không có máy chủ trung gian.** Bạn tự triển khai lên tài khoản Vercel và Supabase của chính mình. Người viết tool này không có quyền truy cập dữ liệu của bạn.
 - **Database bị khoá**: trình duyệt không thể đọc database trực tiếp. Chỉ phần máy chủ của bạn (giữ khoá bí mật) mới đọc/ghi được.
-- **Vào app cần mật khẩu gia đình**; mỗi thiết bị được nhớ 6 tháng. Sai mật khẩu 10 lần sẽ bị khoá 15 phút.
+- **Vào app cần mật khẩu gia đình**; mỗi thiết bị được nhớ 30 ngày và tự gia hạn khi còn dùng. Một thiết bị/mạng sai mật khẩu 10 lần sẽ bị khoá 15 phút — chỉ thiết bị đó, cả nhà vẫn vào bình thường. Mất điện thoại thì bấm **Đăng xuất mọi thiết bị** trong tab ⚙️.
 - **Bot chỉ trả lời người có tên trong danh sách thành viên**; người lạ nhắn vào sẽ bị từ chối.
 - Telegram chỉ thấy các tin bạn nhắn cho bot (giống mọi cuộc chat Telegram). Nếu không muốn, bạn có thể **chỉ dùng web app**.
 

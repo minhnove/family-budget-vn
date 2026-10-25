@@ -22,7 +22,7 @@ Issue có nhãn **`good first issue`** phù hợp cho người mới.
 1. **Fork** repo về tài khoản của bạn, clone về máy.
 2. Tạo nhánh mới từ `main`: `git checkout -b sua-loi-ngay-thang` (tên ngắn, mô tả việc).
 3. Sửa code. Chạy thử: `npm run dev` → http://localhost:3000 (mật khẩu `demo`).
-4. **Chạy kiểm tra** (bắt buộc, giống hệt CI):
+4. **Chạy kiểm tra** (bắt buộc, giống hệt CI — lần đầu chạy `npm ci --ignore-scripts` để cài đúng phiên bản trong `package-lock.json`):
    ```bash
    npm test
    ```
@@ -44,7 +44,8 @@ Những nguyên tắc này giúp tool luôn **đơn giản, riêng tư, dễ t�
 4. **Không đưa dữ liệu thật vào repo.** Ví dụ, ảnh chụp, dữ liệu test chỉ dùng số liệu bịa (gia đình mẫu "Bố, Mẹ, Bé"). CI có bước quét chặn token/key.
 5. **Tiếng Việt là ngôn ngữ chính** của giao diện và tài liệu; code và tên biến dùng tiếng Anh hoặc tiếng Việt không dấu như hiện tại.
 6. **Bộ hiểu câu dùng chung** (`public/js/shared.js`) chạy cả trình duyệt lẫn máy chủ — không import thư viện Node vào file này.
-7. **Thay đổi database** (sửa `supabase/schema.sql`) phải tương thích ngược hoặc kèm đoạn SQL migration và ghi chú trong PR để người đang dùng nâng cấp được.
+7. **Thay đổi database**: sửa `supabase/schema.sql` (cho cài mới) **và** thêm file chạy-lại-được trong `supabase/migrations/` (cho bản đang chạy), ghi vào `CHANGELOG.md`.
+8. **Bảo mật**: mọi dữ liệu từ client phải được máy chủ kiểm lại; không thêm script/style tải từ bên ngoài (CSP sẽ chặn); thư viện mới phải đã phát hành ít nhất 2 tuần.
 
 ## Viết test
 

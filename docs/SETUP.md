@@ -27,7 +27,7 @@ Khoảng **30 phút**, **0 đồng**. Làm lần lượt từ trên xuống. Kh�
 | Tài khoản [Supabase](https://supabase.com) | Đăng nhập bằng GitHub cho nhanh. Gói Free |
 | Tài khoản [Vercel](https://vercel.com) | Đăng nhập bằng GitHub. Gói **Hobby** (miễn phí) |
 | Telegram trên điện thoại | Mỗi thành viên muốn dùng bot |
-| *(tuỳ chọn)* [Node.js 20+](https://nodejs.org) | Chỉ cần nếu muốn chạy thử trên máy hoặc deploy bằng dòng lệnh |
+| *(tuỳ chọn)* [Node.js 22+](https://nodejs.org) | Chỉ cần nếu muốn chạy thử trên máy hoặc deploy bằng dòng lệnh |
 
 ## 2. Fork repo & sửa dữ liệu ban đầu (tuỳ chọn)
 
@@ -85,7 +85,7 @@ Trong **Table Editor**, bấm vào ô để sửa, **Insert → Insert row** đ�
 
 ## 5. Tạo các chuỗi bí mật
 
-Cần 3 chuỗi ngẫu nhiên, mỗi chuỗi ≥ 32 ký tự: `SESSION_SECRET`, `TELEGRAM_WEBHOOK_SECRET`, `CRON_SECRET`.
+Cần 3 chuỗi ngẫu nhiên, mỗi chuỗi **≥ 32 ký tự** (ngắn hơn thì app từ chối chạy phần tương ứng): `SESSION_SECRET`, `TELEGRAM_WEBHOOK_SECRET`, `CRON_SECRET`.
 
 - **Có Node.js**: chạy lệnh sau 3 lần, mỗi lần lấy 1 chuỗi:
   ```bash
@@ -124,7 +124,7 @@ npx vercel@latest login
 ```bash
 npx vercel@latest link --yes --project thuchi-giadinh
 ```
-Thêm biến (mỗi lệnh sẽ hỏi giá trị; trên Windows có sẵn `scripts/add-secrets.ps1` hỏi lần lượt):
+Thêm biến. Trên Windows chạy `powershell -ExecutionPolicy Bypass -File scriptsadd-secrets.ps1`: script tự sinh 3 chuỗi bí mật và hỏi lần lượt 4 biến còn lại. Hoặc thêm từng biến (mỗi lệnh sẽ hỏi giá trị):
 ```bash
 npx vercel@latest env add SUPABASE_URL production
 ```
@@ -149,7 +149,7 @@ npx vercel@latest deploy --prod
 - **iPhone (Safari)**: mở địa chỉ app → nút **Chia sẻ** → **Thêm vào MH chính**.
 - **Android (Chrome)**: **⋮** → **Thêm vào màn hình chính** / **Cài đặt ứng dụng**.
 
-App mở toàn màn hình như app thật, nhớ đăng nhập 6 tháng.
+App mở toàn màn hình như app thật, nhớ đăng nhập 30 ngày và tự gia hạn khi còn dùng.
 
 ## 9. Kiểm tra lần cuối
 
@@ -163,25 +163,26 @@ App mở toàn màn hình như app thật, nhớ đăng nhập 6 tháng.
 
 | Hiện tượng | Nguyên nhân & cách xử lý |
 |---|---|
-| Đăng nhập báo **"Chưa cấu hình FAMILY_PASSWORD (tối thiểu 10 ký tự)"** | Thiếu biến hoặc mật khẩu < 10 ký tự. Sửa trên Vercel → **Redeploy**. |
-| Đăng nhập báo **"Database: Invalid path specified in request URL"** | `SUPABASE_URL` sai định dạng. Phải là `https://xxxx.supabase.co`. Sửa → Redeploy. |
-| Báo **"Database: Invalid API key"** / **permission denied** | Dán nhầm key `anon` thay vì `service_role`, hoặc copy thiếu ký tự. |
+| App báo **"Máy chủ chưa cấu hình đủ…"** hoặc **"Lỗi máy chủ…"** | Vì an toàn, chi tiết lỗi không hiện trên trình duyệt. Vào *Vercel → Project → Logs* xem dòng lỗi: thiếu/ngắn biến môi trường (`FAMILY_PASSWORD` < 10 ký tự, `SESSION_SECRET` < 32 ký tự…), lỗi database… Sửa trên Vercel → **Redeploy**. |
+| Log ghi **"Could not find the function public.login_attempt"** | Chưa chạy `schema.sql` (cài mới) hoặc file migration (nâng cấp từ v1.0) — xem [CHANGELOG](../CHANGELOG.md). |
+| Log ghi **"Invalid path specified in request URL"** | `SUPABASE_URL` sai định dạng. Phải là `https://xxxx.supabase.co`. Sửa → Redeploy. |
+| Log ghi **"Invalid API key"** / **permission denied** | Dán nhầm key `anon` thay vì `service_role`, hoặc copy thiếu ký tự. |
 | Báo **relation "…" does not exist** | Chưa chạy `schema.sql` (bước 3.2). |
 | App hiện dải vàng **"Chế độ xem thử"** | Thiếu `SUPABASE_URL` hoặc `SUPABASE_SERVICE_ROLE_KEY` → app đang dùng dữ liệu mẫu. Thêm biến → Redeploy. |
 | Bot không trả lời | Tab ⚙️ xem webhook. Chưa kết nối → bấm *Kết nối Telegram*. Có "Lỗi gần nhất 401" → `TELEGRAM_WEBHOOK_SECRET` vừa đổi, bấm kết nối lại. |
 | Bot trả lời **"🔒 chưa được cấp quyền"** | Chưa dán Telegram ID vào `members.tg_id`, hoặc dán sai dòng. |
 | Bot hiểu sai danh mục | Bấm **📂 Đổi danh mục** — bot tự học từ khoá. Hoặc thêm từ khoá trong bảng `categories`. |
-| **"Sai mật khẩu quá nhiều lần"** | Bảo vệ chống dò mật khẩu: đợi 15 phút. |
+| **"Sai mật khẩu quá nhiều lần từ thiết bị / mạng này"** | Chống dò mật khẩu theo từng IP: đợi 15 phút, hoặc dùng mạng khác (4G). Người nhà ở mạng khác không bị ảnh hưởng. |
 | Không nhận tin nhắc 21h | Chưa có thành viên nào có `tg_id`; hoặc chưa đến giờ (có thể lệch đến 22h). Xem *Vercel → Project → Cron Jobs*. |
 | Supabase báo project **Paused** | 7 ngày không ai dùng. Vào Supabase bấm **Restore**. Cron hằng ngày thường giữ project luôn hoạt động. |
 
 ## 11. Cập nhật, sao lưu, bảo mật
 
-**Cập nhật bản mới**: trên trang fork của bạn bấm **Sync fork** → Vercel tự deploy lại. Nếu bản mới có thay đổi database, release notes sẽ ghi rõ đoạn SQL cần chạy.
+**Cập nhật bản mới**: trên trang fork của bạn bấm **Sync fork** → Vercel tự deploy lại. Đọc [CHANGELOG.md](../CHANGELOG.md) trước: bản nào có thay đổi database sẽ kèm 1 file trong `supabase/migrations/` cần chạy trong SQL Editor (chạy lại nhiều lần cũng an toàn).
 
 **Sao lưu**: gói Free của Supabase không cho tải bản sao lưu. Mỗi tháng vào *Table Editor → `transactions` → Export → CSV* cất vào Drive (làm tương tự với `debts`, `categories` nếu đã sửa nhiều).
 
-**Mất điện thoại / lộ mật khẩu**: đổi `FAMILY_PASSWORD` **và** `SESSION_SECRET` trên Vercel → Redeploy → mọi thiết bị phải đăng nhập lại.
+**Mất điện thoại / lộ mật khẩu**: tab ⚙️ → **Đăng xuất mọi thiết bị**, rồi đổi `FAMILY_PASSWORD` trên Vercel → Redeploy. Đổi mật khẩu gia đình là mọi phiên cũ cũng tự hết hiệu lực.
 
 **Lộ `service_role` key**: Supabase → *Project Settings → API Keys* → tạo key mới / roll → cập nhật trên Vercel → Redeploy.
 
