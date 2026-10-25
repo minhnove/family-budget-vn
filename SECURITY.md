@@ -23,7 +23,13 @@ Ngoài phạm vi: lỗ hổng của Vercel / Supabase / Telegram; cấu hình sa
 
 ## Phiên bản được hỗ trợ
 
-Chỉ nhánh `main` mới nhất. Người tự host nên **Sync fork** thường xuyên để nhận bản vá.
+Chỉ nhánh `main` mới nhất. Người tự host nên **Sync fork** thường xuyên để nhận bản vá, và chạy file migration đi kèm nếu [CHANGELOG](CHANGELOG.md) yêu cầu.
+
+## Lịch sử bản vá
+
+| Phiên bản | Ngày | Nội dung |
+|---|---|---|
+| v1.1.0 | 2026-10-25 | Gia cố đăng nhập (giới hạn theo IP, nguyên tử), phiên thu hồi được, CSP + tự host Chart.js, kiểm dữ liệu ở máy chủ, chống CSRF, bot chỉ chat riêng, khoá phiên bản thư viện. Chi tiết và cách nâng cấp: [CHANGELOG](CHANGELOG.md#v110--2026-10-25--bản-vá-bảo-mật). |
 
 ## Khuyến nghị cho người tự host
 

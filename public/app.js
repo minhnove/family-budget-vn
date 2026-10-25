@@ -63,6 +63,14 @@ $('#btnLogout').onclick = async () => {
   await fetch('/api/login', { method: 'DELETE', credentials: 'same-origin' });
   location.reload();
 };
+$('#btnLogoutAll').onclick = async () => {
+  if (!confirm('Đăng xuất khỏi MỌI thiết bị đang dùng app (kể cả máy này)?')) return;
+  try {
+    await call('logoutAll');
+    await fetch('/api/login', { method: 'DELETE', credentials: 'same-origin' });
+    location.reload();
+  } catch (e) { fail(e); }
+};
 
 // ---------- cài đặt ----------
 async function loadSettings() {

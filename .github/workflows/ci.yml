@@ -19,11 +19,18 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 5
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
+      # Action ghim theo mã commit (SHA), không theo nhãn có thể bị dời. Dependabot sẽ đề xuất bản mới.
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1  # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1  # v7.1.0
         with:
           node-version: 22
+      - name: Cài đúng phiên bản trong package-lock.json (không chạy install script)
+        run: npm ci --ignore-scripts
       - name: Kiểm tra tự động (dữ liệu bộ nhớ + Telegram giả lập)
         run: npm test
       - name: Quét bí mật (key, token, file .env)
         run: npm run check
+      - name: Kiểm tra lỗ hổng thư viện
+        run: npm audit --omit=dev --audit-level=low

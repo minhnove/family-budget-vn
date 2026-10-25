@@ -64,9 +64,9 @@ export function pad2_(n) { return (n < 10 ? '0' : '') + n; }
 
 // ---------- Mảng ----------
 export function sum_(arr, fn) { return arr.reduce((a, x) => a + (fn ? fn(x) : x), 0); }
-export function groupBy_(arr, fn) { const r = {}; arr.forEach(x => { const k = fn(x); (r[k] = r[k] || []).push(x); }); return r; }
+export function groupBy_(arr, fn) { const r = Object.create(null); arr.forEach(x => { const k = fn(x); (r[k] = r[k] || []).push(x); }); return r; }
 export function sumBy_(arr, keyFn, valFn) {
-  const r = {}; arr.forEach(x => { const k = keyFn(x); r[k] = (r[k] || 0) + (valFn ? valFn(x) : x.amount); }); return r;
+  const r = Object.create(null); arr.forEach(x => { const k = keyFn(x); r[k] = (r[k] || 0) + (valFn ? valFn(x) : x.amount); }); return r;
 }
 export function uniq_(arr) { return arr.filter((x, i) => arr.indexOf(x) === i); }
 

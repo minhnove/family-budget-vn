@@ -12,7 +12,7 @@
   <link rel="icon" href="/icon.svg" type="image/svg+xml">
   <link rel="apple-touch-icon" href="/icon-192.png">
   <link rel="stylesheet" href="/styles.css">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <script src="/vendor/chart.umd.js"></script>
 </head>
 <body>
   <!-- ĐĂNG NHẬP -->
@@ -20,7 +20,7 @@
     <form id="loginForm" class="card login-card" autocomplete="on">
       <div class="login-logo">💰</div>
       <h2 class="app-name">Thu chi gia đình</h2>
-      <p class="muted">Nhập mật khẩu gia đình. Thiết bị này sẽ được nhớ 6 tháng.</p>
+      <p class="muted">Nhập mật khẩu gia đình. Thiết bị này sẽ được nhớ 30 ngày.</p>
       <input id="loginPw" type="password" placeholder="Mật khẩu" autocomplete="current-password" required>
       <button class="btn" type="submit">Vào app</button>
       <p id="loginErr" class="bad" hidden></p>
@@ -143,8 +143,13 @@
           <b>debts</b>, <b>assets</b>, <b>members</b>. Sửa xong tải lại app là thấy.</p>
       </div>
       <div class="card">
-        <h3>Thiết bị này</h3>
-        <button class="btn btn-ghost" id="btnLogout" type="button">Đăng xuất</button>
+        <h3>Đăng nhập</h3>
+        <p class="muted">Mỗi thiết bị được nhớ 30 ngày và tự gia hạn khi còn dùng. Đổi mật khẩu gia đình trên Vercel thì mọi thiết bị phải đăng nhập lại.</p>
+        <div class="btn-row">
+          <button class="btn btn-ghost" id="btnLogout" type="button">Đăng xuất thiết bị này</button>
+          <button class="btn btn-ghost" id="btnLogoutAll" type="button">Đăng xuất mọi thiết bị</button>
+        </div>
+        <p class="muted">Mất điện thoại hoặc nghi lộ mật khẩu: bấm "Đăng xuất mọi thiết bị", rồi đổi mật khẩu gia đình.</p>
       </div>
     </section>
   </main>

@@ -93,7 +93,7 @@ git clone https://github.com/<bạn>/family-budget-vn.git
 cd family-budget-vn && npm run dev
 ```
 
-Mở http://localhost:3000, mật khẩu **`demo`**. Có sẵn 3 tháng giao dịch mẫu của gia đình "Bố, Mẹ, Bé" để xem báo cáo. Chạy bộ kiểm tra tự động: `npm test` (gần 40 bài kiểm tra, không cần mạng).
+Mở http://localhost:3000, mật khẩu **`demo`**. Có sẵn 3 tháng giao dịch mẫu của gia đình "Bố, Mẹ, Bé" để xem báo cáo. Chạy bộ kiểm tra tự động: `npm test` (khoảng 70 bài kiểm tra, gồm các bài tái hiện lỗ hổng bảo mật; không cần mạng).
 
 ## Chi phí & giới hạn gói miễn phí
 
@@ -113,19 +113,20 @@ lib/
   report.js          Báo cáo tháng/năm, ngân sách, baseline, dự phóng, nợ, lãi năm, tài sản ròng
   bot.js, texts.js   Telegram bot + việc chạy hằng ngày
   db.js              Supabase (chạy thật) hoặc bộ nhớ (chạy thử)
-  auth.js            Mật khẩu gia đình, cookie ký HMAC 180 ngày, khoá 15' sau 10 lần sai
+  auth.js            Mật khẩu gia đình, phiên 30 ngày tự gia hạn, thu hồi được; giới hạn thử theo IP
   seed.js            Dữ liệu ví dụ (sửa cho nhà bạn) · demo-data.js: giao dịch mẫu cho chế độ xem thử
 supabase/            schema.sql (bảng + RLS) · seed.sql (sinh từ lib/seed.js: npm run seed-sql)
 scripts/             dev-server · test · gen-seed-sql · add-secrets.ps1
 ```
 
-Không framework, 1 dependency (`@supabase/supabase-js`). Toàn bộ logic là JavaScript thuần, dễ đọc, dễ sửa.
+Không framework, 1 dependency (`@supabase/supabase-js`, khoá phiên bản trong `package-lock.json`), Chart.js tự host trong `public/vendor/`. Toàn bộ logic là JavaScript thuần, dễ đọc, dễ sửa.
 
 ## Bảo mật & riêng tư
 
 - Dữ liệu chỉ nằm trong **Supabase của bạn**. Trình duyệt **không bao giờ** truy cập thẳng database: mọi bảng bật RLS không có policy, chỉ máy chủ (giữ `service_role` key trong biến môi trường Vercel) đọc/ghi được.
-- Vào app cần **mật khẩu gia đình** (≥ 10 ký tự trên Vercel). Cookie HttpOnly ký HMAC, sai 10 lần → khoá 15 phút. Muốn đăng xuất mọi thiết bị: đổi `SESSION_SECRET`.
-- Bot chỉ phục vụ Telegram ID có trong bảng `members`; webhook xác thực bằng secret token chính thức của Telegram; cron xác thực bằng `CRON_SECRET`.
+- Vào app cần **mật khẩu gia đình** (≥ 10 ký tự trên Vercel). Mỗi IP chỉ được thử 10 lần / 15 phút (đếm nguyên tử trong database, bắn song song cũng không vượt được); toàn hệ thống sai nhiều bất thường → bot cảnh báo cả nhà. Phiên đăng nhập 30 ngày, tự gia hạn; đổi mật khẩu gia đình hoặc bấm **Đăng xuất mọi thiết bị** là mọi phiên cũ hết hiệu lực.
+- Trang chặt bằng Content-Security-Policy, không tải script từ bên ngoài; API chống CSRF (chỉ nhận JSON cùng origin); máy chủ kiểm lại mọi dữ liệu nhập; lỗi hệ thống không lộ chi tiết ra trình duyệt.
+- Bot chỉ phục vụ Telegram ID có trong bảng `members` và **chỉ trong chat riêng** (lỡ thêm vào group cũng không lộ số liệu); webhook xác thực bằng secret token chính thức của Telegram; cron xác thực bằng `CRON_SECRET`.
 - Trang gắn `noindex` — không xuất hiện trên Google.
 
 ## Câu hỏi thường gặp
@@ -137,6 +138,10 @@ Không framework, 1 dependency (`@supabase/supabase-js`). Toàn bộ logic là J
 **Có nhập từ sao kê ngân hàng không?** Chưa. Mục tiêu là ghi tay thật nhanh để cả nhà *ý thức* chi tiêu. Pull request chào đón!
 
 **Không dùng Telegram được không?** Được — chỉ dùng web app. Bỏ trống `TELEGRAM_TOKEN`, phần nhắc tự động sẽ tắt.
+
+## Lịch sử phiên bản
+
+Xem [CHANGELOG.md](CHANGELOG.md). Bản **v1.1.0** là bản vá bảo mật — bản đang chạy nên nâng cấp theo hướng dẫn trong đó (cập nhật code + chạy 1 file migration SQL).
 
 ## Đóng góp
 
