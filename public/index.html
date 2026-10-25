@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0f766e">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-title" content="Thu chi">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Thu chi gia đình</title>
+  <link rel="manifest" href="/manifest.webmanifest">
+  <link rel="icon" href="/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="/icon-192.png">
+  <link rel="stylesheet" href="/styles.css">
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+</head>
+<body>
+  <!-- ĐĂNG NHẬP -->
+  <div id="login" class="login" hidden>
+    <form id="loginForm" class="card login-card" autocomplete="on">
+      <div class="login-logo">💰</div>
+      <h2 class="app-name">Thu chi gia đình</h2>
+      <p class="muted">Nhập mật khẩu gia đình. Thiết bị này sẽ được nhớ 6 tháng.</p>
+      <input id="loginPw" type="password" placeholder="Mật khẩu" autocomplete="current-password" required>
+      <button class="btn" type="submit">Vào app</button>
+      <p id="loginErr" class="bad" hidden></p>
+    </form>
+  </div>
+
+  <header>
+    <div class="brand">💰 <span class="app-name">Thu chi gia đình</span></div>
+    <nav class="tabs">
+      <button data-tab="nhap" class="active">Nhập</button>
+      <button data-tab="so">Sổ</button>
+      <button data-tab="thang">Tháng</button>
+      <button data-tab="nam">Năm</button>
+      <button data-tab="no">Nợ & tài sản</button>
+      <button data-tab="caidat" title="Cài đặt">⚙️</button>
+    </nav>
+  </header>
+
+  <div id="demoBanner" class="demo-banner" hidden>
+    🧪 <b>Chế độ xem thử</b> — chưa nối database, số liệu là dữ liệu mẫu và những gì bạn nhập <b>sẽ không được lưu</b>.
+  </div>
+
+  <main>
+    <!-- NHẬP -->
+    <section id="tab-nhap" class="tab active">
+      <div class="card quick">
+        <form id="quickForm" autocomplete="off" class="quick-input">
+          <input id="qText" placeholder="chi ăn sáng 50k" enterkeyhint="send" autocapitalize="off" spellcheck="false">
+          <button class="btn-send" id="btnSave" type="submit" title="Lưu (Enter)" disabled>Lưu</button>
+        </form>
+        <div id="qPreview" class="q-preview"></div>
+        <div class="chips types-mini" id="qTypes"></div>
+        <div class="chips" id="qDebts" hidden></div>
+        <div class="icon-grid" id="qCats"></div>
+        <div class="q-foot">
+          <div class="chips" id="qPeople"></div>
+          <details class="q-help">
+            <summary>Cú pháp</summary>
+            <div id="qExamples"></div>
+            <p class="muted">Cú pháp: <b>[ngày] Thu/Chi + nội dung + số tiền</b>. Bỏ ngày = hôm nay, bỏ Thu/Chi = Chi.
+              Ngày: 15/3, 15/3/2027, hôm qua. Số tiền: 50k, 1tr2, 2,5tr, 1.500.000. Ghi cho người khác: #mẹ, #bé.</p>
+          </details>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-head"><h3>Mới ghi tháng này</h3><span id="recentSum" class="muted"></span></div>
+        <div id="recentList" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- SỔ -->
+    <section id="tab-so" class="tab">
+      <div class="card">
+        <div class="filters">
+          <input type="month" id="soMonth">
+          <select id="soType"><option value="">Tất cả loại</option></select>
+          <input id="soSearch" placeholder="Tìm ghi chú, danh mục, người...">
+        </div>
+        <div id="soSummary" class="muted" style="margin:8px 0"></div>
+        <div id="soList" class="table-wrap"></div>
+      </div>
+    </section>
+
+    <!-- THÁNG -->
+    <section id="tab-thang" class="tab">
+      <div class="toolbar"><input type="month" id="mMonth"><span id="mInfo" class="muted"></span></div>
+      <div id="mKpis" class="kpis"></div>
+      <div id="mAlerts"></div>
+      <div class="card">
+        <div class="card-head"><h3>Chi theo danh mục vs ngân sách</h3><span class="muted" id="mBudgetSum"></span></div>
+        <div id="mCats" class="table-wrap"></div>
+      </div>
+      <div class="card" id="mAnnualCard" hidden>
+        <div class="card-head"><h3>Khoản theo năm</h3><span class="muted" id="mAnnualSave"></span></div>
+        <div id="mAnnual" class="table-wrap"></div>
+      </div>
+      <div class="grid2">
+        <div class="card"><h3>Theo người</h3><div id="mPeople" class="table-wrap"></div></div>
+        <div class="card"><h3>Nguồn thu</h3><div id="mIncome" class="table-wrap"></div></div>
+      </div>
+      <div class="card"><h3>Xu hướng 12 tháng</h3><div class="chart"><canvas id="chTrend"></canvas></div></div>
+      <div class="card"><h3>Tổng dư nợ cuối tháng</h3><div class="chart small"><canvas id="chDebt"></canvas></div></div>
+    </section>
+
+    <!-- NĂM -->
+    <section id="tab-nam" class="tab">
+      <div class="toolbar"><select id="yYear"></select><span class="muted" id="yInfo"></span></div>
+      <div id="yKpis" class="kpis"></div>
+      <div class="card"><h3>Theo tháng</h3><div id="yMonths" class="table-wrap"></div></div>
+      <div class="card"><h3>Chi tiêu: danh mục × tháng</h3><p class="muted">Ô đỏ = vượt ngân sách tháng đó, vàng = ≥80%.</p><div id="yMatrix" class="table-wrap"></div></div>
+      <div class="grid2">
+        <div class="card"><h3>Thu nhập theo danh mục</h3><div id="yIncome" class="table-wrap"></div></div>
+        <div class="card"><h3>Theo người</h3><div id="yPeople" class="table-wrap"></div></div>
+      </div>
+      <div class="card"><h3>Biểu đồ năm</h3><div class="chart"><canvas id="chYear"></canvas></div></div>
+    </section>
+
+    <!-- NỢ -->
+    <section id="tab-no" class="tab">
+      <div id="dKpis" class="kpis"></div>
+      <div class="card"><h3>Tài sản</h3><div id="dAssets" class="table-wrap"></div>
+        <p class="muted">Sửa ở Supabase → Table Editor → bảng <b>assets</b> (giá vàng: cột <i>price</i>). Dòng loại "Phải thu" tự cộng Cho vay / trừ Thu hồi nợ.</p></div>
+      <div id="dTip"></div>
+      <h3>Các khoản nợ</h3>
+      <div id="dList"></div>
+      <p class="muted">Thêm/sửa khoản nợ ở Supabase → bảng <b>debts</b>. Thứ tự sắp theo lãi suất cao → thấp (Avalanche: trả thêm vào khoản lãi cao nhất trước để tốn ít lãi nhất).</p>
+    </section>
+
+    <!-- CÀI ĐẶT -->
+    <section id="tab-caidat" class="tab">
+      <div class="card">
+        <h3>Telegram bot</h3>
+        <div id="tgStatus" class="muted">Đang kiểm tra…</div>
+        <button class="btn" id="btnTgSetup" type="button" style="margin-top:12px">Kết nối / kết nối lại Telegram</button>
+        <p class="muted">Sau khi kết nối: mỗi người mở bot, gõ <code>/id</code>, rồi dán số ID vào cột <b>tg_id</b> của bảng <b>members</b> trên Supabase.</p>
+      </div>
+      <div class="card">
+        <h3>Sửa danh mục, ngân sách, khoản nợ, tài sản</h3>
+        <p class="muted">Vào <b>Supabase → Table Editor</b>: bảng <b>categories</b> (ngân sách, từ khoá, icon), <b>budget_overrides</b> (ngân sách riêng 1 tháng),
+          <b>debts</b>, <b>assets</b>, <b>members</b>. Sửa xong tải lại app là thấy.</p>
+      </div>
+      <div class="card">
+        <h3>Thiết bị này</h3>
+        <button class="btn btn-ghost" id="btnLogout" type="button">Đăng xuất</button>
+      </div>
+    </section>
+  </main>
+
+  <div id="toast" class="toast"></div>
+  <div id="loading" class="loading" hidden>Đang tải…</div>
+  <script type="module" src="/app.js"></script>
+</body>
+</html>
