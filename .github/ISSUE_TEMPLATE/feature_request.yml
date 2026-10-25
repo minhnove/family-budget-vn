@@ -1,0 +1,26 @@
+name: ✨ Đề xuất tính năng
+description: Ý tưởng giúp tool tốt hơn cho gia đình
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Gia đình bạn đang gặp vấn đề gì?
+      description: Mô tả tình huống thực tế — điều này quan trọng hơn giải pháp cụ thể.
+      placeholder: "VD: Cuối tháng muốn biết riêng tiền cho con chiếm bao nhiêu % thu nhập nhưng phải tự tính."
+    validations:
+      required: true
+  - type: textarea
+    id: solution
+    attributes:
+      label: Bạn hình dung giải pháp thế nào?
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Hiện tại bạn đang xoay xở ra sao?
+  - type: checkboxes
+    id: contribute
+    attributes:
+      label: Đóng góp
+      options:
+        - label: Tôi muốn tự làm Pull Request cho tính năng này (maintainer sẽ trao đổi hướng làm trước).

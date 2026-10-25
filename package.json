@@ -2,11 +2,14 @@
   "name": "family-budget-vn",
   "private": true,
   "type": "module",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "dev": "node scripts/dev-server.js",
     "test": "node scripts/test.js",
-    "seed-sql": "node scripts/gen-seed-sql.js"
+    "seed-sql": "node scripts/gen-seed-sql.js",
+    "check": "node scripts/check-secrets.js"
   },
   "dependencies": {
     "@supabase/supabase-js": "2.45.4"

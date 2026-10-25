@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: 🔒 Báo lỗ hổng bảo mật (riêng tư)
+    url: https://github.com/minhnove/family-budget-vn/security/advisories/new
+    about: Không mở Issue công khai cho lỗ hổng bảo mật — báo riêng tại đây.
+  - name: 📖 Hướng dẫn cài đặt & xử lý lỗi
+    url: https://github.com/minhnove/family-budget-vn/blob/main/docs/SETUP.md
+    about: Phần lớn lỗi khi cài đặt đã có cách xử lý ở mục 10 của SETUP.md.

@@ -1,5 +1,9 @@
 # 💰 Family Budget VN — Thu chi gia đình
 
+[![CI](https://github.com/minhnove/family-budget-vn/actions/workflows/ci.yml/badge.svg)](https://github.com/minhnove/family-budget-vn/actions/workflows/ci.yml)
+[![License: MIT](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+[![PRs welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](CONTRIBUTING.md)
+
 > **Cả nhà cùng ghi chi tiêu — gõ 1 dòng là xong, đồng bộ tức thì, cá nhân hoá theo nhà bạn, và hoàn toàn riêng tư.**
 >
 > *A private, self-hosted family budget tracker for Vietnamese households. Log expenses in plain Vietnamese ("chi ăn sáng 50k") from a web app or a Telegram bot — both write to the same database you own.*
@@ -136,7 +140,11 @@ Không framework, 1 dependency (`@supabase/supabase-js`). Toàn bộ logic là J
 
 ## Đóng góp
 
-Issue và pull request đều chào đón. Trước khi gửi PR: `npm test` phải xanh. Giữ tinh thần **không framework, ít dependency, dữ liệu thuộc về người dùng**.
+Báo lỗi, đề xuất tính năng, sửa tài liệu hay viết code đều được chào đón — đọc **[CONTRIBUTING.md](CONTRIBUTING.md)** trước khi bắt đầu.
+
+- Quy trình: **Fork → nhánh mới → Pull Request** vào `main`. CI tự chạy `npm test` và quét bí mật; maintainer review và merge.
+- Nguyên tắc: **không framework, ít dependency, dữ liệu thuộc về người dùng, không đưa số liệu thật vào repo**.
+- Lỗ hổng bảo mật: **báo riêng** theo [SECURITY.md](SECURITY.md), không mở Issue công khai.
 
 ## Giấy phép
 

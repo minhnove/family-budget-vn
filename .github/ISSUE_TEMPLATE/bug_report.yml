@@ -1,0 +1,59 @@
+name: 🐞 Báo lỗi
+description: Có gì đó chạy sai
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Cảm ơn bạn đã báo lỗi! ⚠️ **Đừng dán số liệu tài chính thật, key, token hay mật khẩu** vào đây — hãy che hoặc thay bằng số giả.
+  - type: textarea
+    id: what
+    attributes:
+      label: Lỗi là gì?
+      description: Mô tả ngắn gọn điều xảy ra.
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: Cách tái hiện
+      placeholder: |
+        1. Vào tab Nhập
+        2. Gõ "15/3 chi đi chợ 350k"
+        3. Thấy ...
+    validations:
+      required: true
+  - type: textarea
+    id: expected
+    attributes:
+      label: Mong đợi đúng ra là gì?
+    validations:
+      required: true
+  - type: dropdown
+    id: where
+    attributes:
+      label: Xảy ra ở đâu?
+      options:
+        - Web app
+        - Telegram bot
+        - Cả hai
+        - Cài đặt / deploy
+        - Tin nhắc tự động (cron)
+    validations:
+      required: true
+  - type: input
+    id: device
+    attributes:
+      label: Thiết bị / trình duyệt
+      placeholder: "VD: iPhone 13, Safari"
+  - type: textarea
+    id: extra
+    attributes:
+      label: Ảnh chụp, log lỗi (đã che số liệu thật)
+  - type: checkboxes
+    id: privacy
+    attributes:
+      label: Xác nhận
+      options:
+        - label: Tôi đã kiểm tra nội dung trên không chứa số liệu thật, key, token hay mật khẩu.
+          required: true
